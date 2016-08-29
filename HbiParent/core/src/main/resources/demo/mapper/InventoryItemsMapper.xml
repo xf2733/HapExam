@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="hap.sell.mapper.InventoryItemsMapper">
+  <resultMap id="BaseResultMap" type="hap.sell.dto.InventoryItems">
+    <id column="INVENTORY_ITEM_ID" jdbcType="BIGINT" property="inventoryItemId" />
+    <result column="ITEM_CODE" jdbcType="VARCHAR" property="itemCode" />
+    <result column="ITEM_UOM" jdbcType="VARCHAR" property="itemUom" />
+    <result column="ITEM_DESCRIPTION" jdbcType="VARCHAR" property="itemDescription" />
+    <result column="ORDER_FLAG" jdbcType="VARCHAR" property="orderFlag" />
+    <result column="START_ACTIVE_DATE" jdbcType="TIMESTAMP" property="startActiveDate" />
+    <result column="END_ACTIVE_DATE" jdbcType="TIMESTAMP" property="endActiveDate" />
+    <result column="ENABLED_FLAG" jdbcType="VARCHAR" property="enabledFlag" />
+    <result column="CREATION_DATE" jdbcType="TIMESTAMP" property="creationDate" />
+    <result column="CREATED_BY" jdbcType="BIGINT" property="createdBy" />
+    <result column="LAST_UPDATED_BY" jdbcType="BIGINT" property="lastUpdatedBy" />
+    <result column="LAST_UPDATE_DATE" jdbcType="TIMESTAMP" property="lastUpdateDate" />
+    <result column="LAST_UPDATE_LOGIN" jdbcType="BIGINT" property="lastUpdateLogin" />
+  </resultMap>
+  <select id="selectByInventoryItems" parameterType="hap.sell.dto.InventoryItems" resultMap="BaseResultMap">
+    select * from hap_inv_inventory_items i
+    <where>
+      <if test="inventoryItemId != null">
+        and i.INVENTORY_ITEM_ID = #{inventoryItemId,jdbcType=BIGINT}
+      </if>
+      <if test="itemCode != null">
+        and i.ITEM_CODE LIKE #{itemCode,jdbcType=VARCHAR}
+      </if>
+      <if test="itemUom != null">
+        and i.ITEM_UOM LIKE #{itemUom,jdbcType=VARCHAR}
+      </if>
+      <if test="itemDescription != null">
+        AND i.ITEM_DESCRIPTION LIKE #{itemDescription,jdbcType=VARCHAR}
+      </if>
+      <if test="orderFlag != null">
+        and i.ORDER_FLAG LIKE #{orderFlag,jdbcType=VARCHAR}
+      </if>
+    </where>
+    </select>
+</mapper>

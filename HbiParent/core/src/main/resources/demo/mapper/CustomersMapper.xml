@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="hap.sell.mapper.CustomersMapper">
+  <resultMap id="BaseResultMap" type="hap.sell.dto.Customers">
+    <id column="CUSTOMER_ID" jdbcType="BIGINT" property="customerId" />
+    <result column="CUSTOMER_NUMBER" jdbcType="VARCHAR" property="customerNumber" />
+    <result column="CUSTOMER_NAME" jdbcType="VARCHAR" property="customerName" />
+    <result column="COMPANY_ID" jdbcType="BIGINT" property="companyId" />
+    <result column="ENABLED_FLAG" jdbcType="VARCHAR" property="enabledFlag" />
+    <result column="CREATION_DATE" jdbcType="TIMESTAMP" property="creationDate" />
+    <result column="CREATED_BY" jdbcType="BIGINT" property="createdBy" />
+    <result column="LAST_UPDATED_BY" jdbcType="BIGINT" property="lastUpdatedBy" />
+    <result column="LAST_UPDATE_DATE" jdbcType="TIMESTAMP" property="lastUpdateDate" />
+    <result column="LAST_UPDATE_LOGIN" jdbcType="BIGINT" property="lastUpdateLogin" />
+  </resultMap>
+  
+  <select id="selectByCustomers" parameterType="hap.sell.dto.Customers" resultMap="BaseResultMap">
+    select * from hap_ar_customers h
+    <where>
+    <if test="customerId != null">
+        and h.CUSTOMER_ID = #{customerId,jdbcType=BIGINT}
+      </if>
+      <if test="customerNumber != null">
+        AND h.CUSTOMER_NUMBER like #{customerNumber,jdbcType=VARCHAR}
+      </if>
+      <if test="customerName != null">
+        AND h.CUSTOMER_NAME like #{customerName,jdbcType=VARCHAR}
+      </if>
+      <if test="companyId != null">
+        AND h.COMPANY_ID = #{companyId,jdbcType=BIGINT}
+      </if>
+      <if test="enabledFlag != null">
+        AND h.ENABLED_FLAG like #{enabledFlag,jdbcType=VARCHAR}
+      </if>
+      <if test="creationDate != null">
+        AND h.CREATION_DAT like #{creationDate,jdbcType=TIMESTAMP}
+      </if>
+    </where>
+  </select>
+  
+</mapper>

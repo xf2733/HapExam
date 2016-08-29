@@ -1,0 +1,472 @@
+<#--
+ * description: Fruit.html
+ * version: 1.0 
+ * author:taotao.xu@hand-china.com
+ * #{copyright}#
+ * 
+-->
+<#include "../include/head.html">
+<body style="padding: 10px;">
+	<form id="detailsForm"></form>
+<!-- <div id="detailsGrid" style="margin: 0; padding: 0"></div> -->
+    <div id="detailsGrid" class="liger-tab">
+    	<div tabid="job_cron_addtab" title="<@spring.message "hap.sell.orderheaders.main"/>" lselected="true">
+       	 	<div id="detailsGrid1" style="margin: 0; padding: 0"></div>
+    	</div>
+    	<div tabid="job_cron_notification" title="<@spring.message "hap.sell.orderheaders.other"/>" lselected="true">
+       		 <div id="detailsGrid2" style="margin: 0; padding: 0"></div>
+   	    </div>
+    </div>
+    <script src="${base.contextPath}/common/code?typeStatue=HAP_OM_ORDER_STATUS" type="text/javascript"></script>
+    <script type="text/javascript">
+    $(function(){
+    	debugger;
+        window['detailsForm'] = $("#detailsForm").ligerForm({
+            fields : [{
+                type : 'text',
+                label : '<@spring.message "hap.sell.orderheaders.ordernumber"/>',
+                name : 'orderNumber',
+                newline : false,
+                width: 100
+            },{
+            	display : '<@spring.message "hap.sell.companys.companyname"/>',
+                name : "companyId",//最终选中的值字段名
+                type : "popup",
+                newline : false,
+                width: 100,
+                //如果不需要把lov选中的textField值放进data中那么这个属性可以不设置，如果需要放在data中就需要设置
+                textField:'companyName',
+                options:{
+                    readonly:false,//是否可编辑
+                    valueField : 'companyId',//选中的valueField
+                    textField : 'companyName',//选中的textField
+                    grid : {
+                        columns : [{
+                            display : '<@spring.message "hap.sell.companys.companynumber"/>',
+                            name : "companyNumber",
+                            width : 150,
+                            type : "text",
+                            align : "left"
+                        },
+                        {
+                            display : '<@spring.message "hap.sell.companys.companyname"/>',
+                            name : "companyName",
+                            width : 150,
+                            type : "text",
+                            align : "left"
+                        }],
+                        //数据查询的url
+                        url : '${base.contextPath}/sell/companys/query'
+                    },
+                    condition : {
+                        inputWidth : 150,
+                        labelWidth : 70,
+                        fields : [ {
+                            display : '<@spring.message "hap.sell.companys.companynumber"/>',
+                            name : "companyNumber",
+                            newline : true,
+                            type : "text"
+                        }, {
+                            display : '<@spring.message "hap.sell.companys.companyname"/>',
+                            name : "companyName",
+                            newline : false,
+                            type : "text"
+                        } ]
+                    }
+                   
+                }
+            },{
+                display: '<@spring.message "hap.sell.companys.customername"/>',
+                name: "customerId",
+                type: "popup",
+                textField: 'customerName',
+                newline : false,
+                width: 100,
+                options:{
+                    readonly:false,//是否可编辑
+                    valueField : 'customerId',//选中的valueField
+                    textField : 'customerName',//选中的textField
+                    grid : {
+                        columns : [{
+                            display : '<@spring.message "hap.sell.companys.customernumber"/>',
+                            name : "customerNumber",
+                            width : 150,
+                            type : "text",
+                            align : "left"
+                        },
+                        {
+                            display : '<@spring.message "hap.sell.companys.customername"/>',
+                            name : "customerName",
+                            width : 150,
+                            type : "text",
+                            align : "left"
+                        }],
+                        //数据查询的url
+                        url : '${base.contextPath}/sell/customers/query',
+                        onLoadData: function(){
+                          if($.ligerui.get('companyId').getValue()!=null){
+                        	  this.setParm('companyId', $.ligerui.get('companyId').getValue());
+                         }
+                        }
+                    },
+                    condition : {
+                        inputWidth : 150,
+                        labelWidth : 70,
+                        fields : [ {
+                            display : '<@spring.message "hap.sell.companys.customernumber"/>',
+                            name : "customerNumber",
+                            newline : true,
+                            type : "text"
+                        }, {
+                            display : '<@spring.message "hap.sell.companys.customername"/>',
+                            name : "customerName",
+                            newline : false,
+                            type : "text"
+                        } ]
+                    }
+                   
+                }
+            },{
+              	 display: '<@spring.message "hap.sell.companys.orderdate"/>',
+                 name   : 'orderDate',
+                 align  : 'center',
+                 newline : true,
+                 width  : 100,
+                 type:'date',
+    	            format : "yyyy-MM-dd",
+                 editor : {
+                     type: 'date'
+                 }
+            },{
+                type : 'text',
+                label : '<@spring.message "hap.sell.companys.amount"/>',//订单总金额
+                name : 'amount',
+                newline : false,
+                width: 100,
+            },/* {
+                type : 'text',
+                label : '<@spring.message "hap.sell.companys.orderstatus"/>',
+                name : 'orderStatus',
+                newline : false,
+                width: 100,
+            } */
+            {
+            	//下拉订单状态
+            	display: "<@spring.message "hap.sell.companys.orderStatus"/>",
+            	name: "orderStatus",
+            	type: "select",
+            	textField:"orderStatus",
+            	newline:false,
+            	width: 100,
+            	options: {
+               	 readonly: false,
+                	valueField: 'value',
+	                textField: 'meaning',
+	                data : typeStatue           
+            	}
+            }],
+            buttons : [{
+                text : "保存",
+                disabled : false,
+                width : 60,
+                click : function(){
+                	 Hap.submitForm({
+                		 wrapArray:true,
+                        form : detailsForm,
+                        grid: detailsGrid1,
+                        gridName:'orderLines',
+                        url : '${base.contextPath}/sell/orderheader/submit'
+                    }) 
+                }
+            },{
+                text : "提交",
+                disabled : false,
+                width : 60,
+                click : function() {
+                }
+            },{
+                text : "审批",
+                disabled : false,
+                width : 60,
+                click : function() {
+                    
+                }
+            },{
+                text : "拒绝",
+                disabled : false,
+                width : 60,
+                click : function() {
+                }
+            },{
+                text :"整单删除",
+                disabled : false,
+                width : 60,
+                click : function() {
+                }
+            },{
+                text :"单据打印",
+                disabled : false,
+                width : 60,
+                click : function() {    
+                }
+            },{
+                text :"返回",
+                disabled : false,
+                width : 60,
+                click : function() {
+                   }
+            }]
+        });
+
+        window['detailsGrid1'] = $("#detailsGrid1").ligerGrid({
+            unSetValidateAttr : false,
+            columns : [ {
+           	 display : '<@spring.message "hap.sell.orderheaders.linenumber"/>',
+             name : 'lineNumber',
+             align : 'left',
+             width : 120,
+             editor : {
+                 type : 'text'
+             }
+        },{
+            	//lov物料编码
+                display : '<@spring.message "hap.sell.companys.itemcode"/>',
+                name : 'inventoryItemId',
+                width : 140,
+                //很重要，否则无法显示选中的描述
+                textField:'itemCode',
+                editor : {
+                    type : 'popup',
+                    valueField : 'inventoryItemId',//lov的valueField
+                    textField : 'itemCode',//lov的textField
+                    grid : {
+                    	 columns : [{
+                             display : "<@spring.message "hap.sell.companys.itemcode"/>",
+                             name : "itemCode",
+                             width : 150,
+                             type : "text",
+                             align : "left"
+                         },
+                         {
+                             display : "<@spring.message "hap.sell.companys.itemdescription"/>",
+                             name : "itemDescription",
+                             width : 150,
+                             type : "text",
+                             align : "left"
+                         }],
+                        url : '${base.contextPath}/sell/inventoryItems/query'
+                    },
+                    //lov上的查询条件
+                    condition : {
+                        inputWidth : 150,
+                        labelWidth : 70,
+                        fields : [ {
+                            display : '<@spring.message "hap.sell.companys.itemcode"/>',
+                            name : "itemCode",
+                            newline : true,
+                            type : "text"
+                        }, {
+                            display : '<@spring.message "hap.sell.companys.itemdescription"/>',
+                            name : "itemDescription",
+                            newline : false,
+                            type : "text"
+                        } ]
+                    }
+                }
+            },{
+                display : '<@spring.message "hap.sell.companys.itemdescription"/>',
+                name : 'itemDescription',
+                align : 'left',
+                width : 150,
+                editor : {
+                    type : 'text'
+                }
+            },{
+                display :'<@spring.message "hap.sell.companys.orderquantityuom"/>',//产品单位
+                name : 'orderQuantityUom',
+                align : 'left',
+                width : 150,
+                editor : {
+                    type : 'text'
+                }
+            },{
+                display : '<@spring.message "hap.sell.companys.orderdquantity"/>',//数量
+                name : 'orderdQuantity',
+                align : 'left',
+                width : 150,
+                editor : {
+                    type : 'text'
+                },
+                validate: {
+                    required: true
+                }
+            },{
+                display : '<@spring.message "hap.sell.companys.unitsellingprice"/>',//销售单价
+                name : 'unitSellingPrice',
+                align : 'left',
+                width : 150,
+                editor : {
+                    type : 'text'
+                },
+                validate: {
+                    required: true
+                }
+            },{
+                display : "<@spring.message "hap.sell.companys.sum"/>",//金额
+                name : 'sum',
+                align : 'left',
+                width : 150,
+                editor : {
+                    type : 'text'
+                },
+                validate: {
+                    required: false
+                }
+                
+            },{
+                display : "<@spring.message "hap.sell.companys.description"/>",//备注
+                name : 'description',
+                align : 'left',
+                width : 150,
+                editor : {
+                    type : 'text'
+                }
+            }],
+            //url : '${base.contextPath}/sell/orderLines/query',
+            toolbar : {
+                items : [ {
+                    text : '<@spring.message "hap.new"/>',
+                    disable : false,
+                    click : (function(){
+                    	var i = 0;
+                    	return function(){
+                        	detailsGrid1.addRow({lineNumber:++i})
+                    	}
+                    })(),
+                    icon : 'add'
+                }, {
+                    line : true
+                }, {
+                    text : '<@spring.message "hap.delete"/>',
+                    click : function() {
+                        /* Hap.gridDelete({
+                            grid : detailsGrid1,
+                            url : '${base.contextPath}/sys/student/delete'
+                        }) */
+                    	detailsGrid1.deleteSelectedRow();
+                    },
+                    icon : 'delete'
+                }, {
+                    line : true
+                }, {
+                    text : '<@spring.message "hap.save"/>',
+                    click : function() {
+                        Hap.gridSave({
+                            grid : detailsGrid1,
+                            url : '${base.contextPath}/sell/orderLines/submit'
+                        })
+                    },
+                    icon : 'save'
+                }]
+            },
+            enabledEdit : true,
+            width : '99%',
+            height : '98%',
+            checkbox : true
+        });
+        
+        window['detailsGrid2'] = $("#detailsGrid2").ligerGrid({
+            unSetValidateAttr : false,
+            columns : [ {
+                type : 'text',
+                label : '<@spring.message "hap.sell.orderheaders.ordernumber"/>',
+                name : 'orderNumber',
+                newline : false,
+                width: 100
+            },{
+                display :'附件信息1',
+                name : 'orderQuantityUom',
+                align : 'left',
+                width : 150,
+                editor : {
+                    type : 'text'
+                }
+            },{
+                display : '附件信息2',
+                name : 'unitSellingPrice',
+                align : 'left',
+                width : 150,
+                editor : {
+                    type : 'text'
+                }
+            },{
+                display : '附件信息3',
+                name : 'unitSellingPrice',
+                align : 'left',
+                width : 150,
+                editor : {
+                    type : 'text'
+                }
+            },{
+                display : "附件信息4",
+                name : 'sum',
+                align : 'left',
+                width : 150,
+                editor : {
+                    type : 'text'
+                }
+                
+            },{
+                display : "附件信息5",
+                name : 'add',
+                align : 'left',
+                width : 150,
+                editor : {
+                    type : 'text'
+                }
+                
+            }],
+            url : '${base.contextPath}/ass/fruit/query',
+            toolbar : {
+                items : [ {
+                    text : '<@spring.message "hap.new"/>',
+                    disable : false,
+                    click : function() {
+                        fruitGrid.addRow({})
+                    },
+                    icon : 'add'
+                }, {
+                    line : true
+                }, {
+                    text : '<@spring.message "hap.delete"/>',
+                    click : function() {
+                        /* Hap.gridDelete({
+                            grid : fruitGrid,
+                            url : '${base.contextPath}/sys/student/delete'
+                        }) */
+                    	fruitGrid.deleteSelectedRow();
+                    },
+                    icon : 'delete'
+                }, {
+                    line : true
+                }, {
+                    text : '<@spring.message "hap.save"/>',
+                    click : function() {
+                        /* Hap.gridSave({
+                            grid : fruitGrid,
+                            url : '${base.contextPath}/ass/fruit/submit'
+                        }) */
+                    },
+                    icon : 'save'
+                }]
+            },
+            enabledEdit : true,
+            width : '99%',
+            height : '98%',
+            checkbox : true
+        });
+    });
+    
+    </script>
+</body>
+</html>

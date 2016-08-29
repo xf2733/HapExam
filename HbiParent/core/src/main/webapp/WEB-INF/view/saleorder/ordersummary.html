@@ -1,0 +1,295 @@
+<#--
+ * description: OrderSummary.html
+ * version: 1.0 
+ * author:feng.xu04@hand-china.com
+ * #{copyright}#
+ * 
+-->
+<#include "../include/head.html">
+<body style="padding: 10px;">
+	<form id="orderForm"></form>
+    <div id="orderGrid" style="margin: 0; padding: 0"></div>
+    <script src="${base.contextPath}/common/code?typeStatue=HAP_OM_ORDER_STATUS" type="text/javascript"></script>
+    <script type="text/javascript">
+    $(function() {
+    	debugger;
+        window['orderForm'] = $("#orderForm").ligerForm({
+        	fields : [{
+            	//公司名称
+            	display : "<@spring.message "hap.sell.companys.companyname"/>",
+                name : "companyId",//最终选中的值字段名
+                type : "popup",
+                newline : false,
+                //如果不需要把lov选中的textField值放进data中那么这个属性可以不设置，如果需要放在data中就需要设置
+                textField:'companyName',
+                options:{
+                    readonly:false,//是否可编辑
+                    valueField : 'companyId',//选中的valueField
+                    textField : 'companyName',//选中的textField
+                    grid : {
+                        columns : [{
+                            display : "<@spring.message "hap.sell.companys.companynumber"/>",
+                            name : "companyNumber",
+                            width : 150,
+                            type : "text",
+                            align : "left"
+                        },
+                        {
+                            display : "<@spring.message "hap.sell.companys.companyname"/>",
+                            name : "companyName",
+                            width : 150,
+                            type : "text",
+                            align : "left"
+                        }],
+                        //数据查询的url
+                        url : '${base.contextPath}/sell/companys/query'
+                    },
+                  //lov上的查询条件
+                    condition : {
+                        inputWidth : 150,
+                        labelWidth : 70,
+                        fields : [ {
+                            display : '<@spring.message "hap.sell.companys.companynumber"/>',
+                            name : "companyNumber",
+                            newline : true,
+                            type : "text"
+                        }, {
+                            display : '<@spring.message "hap.sell.companys.companyname"/>',
+                            name : "companyName",
+                            newline : false,
+                            type : "text"
+                        } ]
+                    }
+                }
+            },{
+            	//lov客户名称
+            	display : "<@spring.message "hap.sell.companys.customername"/>",
+                name : "customerId",//最终选中的值字段名
+                type : "popup",
+                newline : false,
+                //如果不需要把lov选中的textField值放进data中那么这个属性可以不设置，如果需要放在data中就需要设置
+                textField:'customerName',
+                options:{
+                    readonly:false,//是否可编辑
+                    valueField : 'customerId',//选中的valueField
+                    textField : 'customerName',//选中的textField
+                    grid : {
+                        columns : [{
+                            display : "<@spring.message "hap.sell.companys.customernumber"/>",
+                            name : "customerNumber",
+                            width : 150,
+                            type : "text",
+                            align : "left"
+                        },
+                        {
+                            display : "<@spring.message "hap.sell.companys.customername"/>",
+                            name : "customerName",
+                            width : 150,
+                            type : "text",
+                            align : "left"
+                        }],
+                        //数据查询的url
+                        url : '${base.contextPath}/sell/customers/query',
+                        onLoadData: function(){
+                   		 if($.ligerui.get('companyId').getValue()!=null){
+                           this.setParm('companyId', $.ligerui.get('companyId').getValue())
+                   		 }
+                   		 }
+
+                    },
+                    condition : {
+                        inputWidth : 150,
+                        labelWidth : 70,
+                        fields : [ {
+                            display : '<@spring.message "hap.sell.companys.customernumber"/>',
+                            name : "customerNumber",
+                            newline : true,
+                            type : "text"
+                        }, {
+                            display : '<@spring.message "hap.sell.companys.customername"/>',
+                            name : "customerName",
+                            newline : false,
+                            type : "text"
+                        } ]
+                    }
+                   
+                }
+            },{
+            	//手打销售订单号
+                type : 'text',
+                label : '<@spring.message "hap.sell.companys.ordernumber"/>',
+                name : 'orderNumber',
+                newline : false,
+                width: 180
+            },{
+            	//lov物料
+            	display : "<@spring.message "hap.sell.companys.inventoryitems"/>",
+                name : "inventoryItemId",//最终选中的值字段名
+                type : "popup",
+                newline : true,
+                //如果不需要把lov选中的textField值放进data中那么这个属性可以不设置，如果需要放在data中就需要设置
+                textField:'itemDescription',
+                options:{
+                    readonly:false,//是否可编辑
+                    valueField : 'inventoryItemId',//选中的valueField
+                    textField : 'itemDescription',//选中的textField
+                    grid : {
+                        columns : [{
+                            display : "<@spring.message "hap.sell.companys.itemcode"/>",
+                            name : "itemCode",
+                            width : 150,
+                            type : "text",
+                            align : "left"
+                        },
+                        {
+                            display : "<@spring.message "hap.sell.companys.itemdescription"/>",
+                            name : "itemDescription",
+                            width : 150,
+                            type : "text",
+                            align : "left"
+                        }],
+                        //数据查询的url
+                        url : '${base.contextPath}/sell/inventoryItems/query',
+                    },
+                    condition : {
+                        inputWidth : 150,
+                        labelWidth : 70,
+                        fields : [ {
+                            display : '<@spring.message "hap.sell.companys.itemcode"/>',
+                            name : "itemCode",
+                            newline : true,
+                            type : "text"
+                        }, {
+                            display : '<@spring.message "hap.sell.companys.itemdescription"/>',
+                            name : "itemDescription",
+                            newline : false,
+                            type : "text"
+                        } ]
+                    }
+                   
+                }
+            },{
+            	//下拉订单状态
+            	display: "<@spring.message "hap.sell.companys.orderStatus"/>",
+            	name: "orderStatus",
+            	type: "select",
+            	textField:"orderStatus",
+            	newline:false,
+            	options: {
+               	 readonly: false,
+                	valueField: 'value',
+	                textField: 'meaning',
+	                data : typeStatue           
+            	}
+            }],
+            buttons : [ {
+            	//查询按钮
+                text : '<@spring.message "hap.query"/>',
+                disabled : false,
+                width : 60,
+                click : function() {
+                	Hap.gridQuery({
+                        form : orderForm,
+                        grid : orderGrid
+                    })
+                    
+                    }
+                },{
+                	//重置按钮
+                    text : '<@spring.message "hap.reset"/>',
+                    disabled : false,
+                    width : 60,
+                    click : function() {
+                    	orderForm.reset();
+                        }
+                    },{
+                    	//导出Excel按钮
+                        text : '<@spring.message "hap.export"/>',
+                        disabled : false,
+                        width : 60,
+                        click : function() {
+                            
+                            }
+                        }]
+              });
+
+        window['orderGrid'] = $("#orderGrid").ligerGrid({
+            unSetValidateAttr : false,
+            //订单显示
+            columns : [ {
+                display : '<@spring.message "hap.sell.companys.ordernumber"/>',
+                name : 'orderNumber',
+                align : 'left',
+                width : 120,
+                validate: {
+                    required: true
+                }
+            },{
+                display : '<@spring.message "hap.sell.companys.companyname"/>',
+                name : 'companyName',
+                align : 'left',
+                width : 120,
+                validate: {
+                    required: true
+                }
+            },{
+                display : '<@spring.message "hap.sell.companys.customername"/>',
+                name : 'customerName',
+                align : 'left',
+                width : 120,
+                validate: {
+                    required: true
+                }
+            },{
+            	//日历
+            	display: '<@spring.message "hap.sell.companys.orderdate"/>',
+                name   : 'orderDate',
+                align  : 'center',
+                width  : 120,
+                type:'date',
+                format : "yyyy-MM-dd",
+            },{
+                display : '<@spring.message "hap.sell.companys.orderstatus"/>',
+                name : 'orderStatus',
+                align : 'left',
+                width : 150,
+                validate: {
+                    required: true
+                }
+            },{
+                display : '<@spring.message "hap.sell.companys.orderTotal"/>',
+                name : 'orderTotal',
+                align : 'left',
+                width : 150,
+                /* editor : {
+                	  type : 'text',
+                }, */
+                validate: {
+                    required: true
+                }
+            }],
+            url : '${base.contextPath}/sell/orderVo/query',
+            toolbar : {
+                items : [ {
+                    text : '<@spring.message "hap.new"/>',
+                    disable : false,
+                    click : function() {
+                        $.ligerDialog.open({
+                        	url : '${base.contextPath}/saleorder/orderdetails.html',
+                        	height : 500,
+                        	width : 1100,
+                        	isResize : true
+                        })
+                    }
+                    }]
+            },
+            enabledEdit : true,
+            width : '99%',
+            height : '98%',
+            checkbox : true
+        }); 
+    });
+    
+    </script>
+</body>
+</html>

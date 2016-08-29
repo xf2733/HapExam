@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="hap.sell.mapper.OrderLinesMapper">
+  <resultMap id="BaseResultMap" type="hap.sell.dto.OrderLines">
+    <id column="LINE_ID" jdbcType="BIGINT" property="lineId" />
+    <result column="HEADER_ID" jdbcType="BIGINT" property="headerId" />
+    <result column="LINE_NUMBER" jdbcType="BIGINT" property="lineNumber" />
+    <result column="INVENTORY_ITEM_ID" jdbcType="BIGINT" property="inventoryItemId" />
+    <result column="ORDERD_QUANTITY" jdbcType="BIGINT" property="orderdQuantity" />
+    <result column="ORDER_QUANTITY_UOM" jdbcType="VARCHAR" property="orderQuantityUom" />
+    <result column="UNIT_SELLING_PRICE" jdbcType="BIGINT" property="unitSellingPrice" />
+    <result column="DESCRIPTION" jdbcType="VARCHAR" property="description" />
+    <result column="COMPANY_ID" jdbcType="BIGINT" property="companyId" />
+    <result column="ADDITION1" jdbcType="VARCHAR" property="addition1" />
+    <result column="ADDITION2" jdbcType="VARCHAR" property="addition2" />
+    <result column="ADDITION3" jdbcType="VARCHAR" property="addition3" />
+    <result column="ADDITION4" jdbcType="VARCHAR" property="addition4" />
+    <result column="ADDITION5" jdbcType="VARCHAR" property="addition5" />
+    <result column="OBJECT_VERSION_NUMBER" jdbcType="DECIMAL" property="objectVersionNumber" />
+    <result column="REQUEST_ID" jdbcType="BIGINT" property="requestId" />
+    <result column="PROGRAM_ID" jdbcType="BIGINT" property="programId" />
+    <result column="CREATION_DATE" jdbcType="TIMESTAMP" property="creationDate" />
+    <result column="CREATED_BY" jdbcType="DECIMAL" property="createdBy" />
+    <result column="LAST_UPDATED_BY" jdbcType="DECIMAL" property="lastUpdatedBy" />
+    <result column="LAST_UPDATE_DATE" jdbcType="TIMESTAMP" property="lastUpdateDate" />
+    <result column="LAST_UPDATE_LOGIN" jdbcType="DECIMAL" property="lastUpdateLogin" />
+    <result column="ATTRIBUTE_CATEGORY" jdbcType="VARCHAR" property="attributeCategory" />
+    <result column="ATTRIBUTE1" jdbcType="VARCHAR" property="attribute1" />
+    <result column="ATTRIBUTE2" jdbcType="VARCHAR" property="attribute2" />
+    <result column="ATTRIBUTE3" jdbcType="VARCHAR" property="attribute3" />
+    <result column="ATTRIBUTE4" jdbcType="VARCHAR" property="attribute4" />
+    <result column="ATTRIBUTE5" jdbcType="VARCHAR" property="attribute5" />
+    <result column="ATTRIBUTE6" jdbcType="VARCHAR" property="attribute6" />
+    <result column="ATTRIBUTE7" jdbcType="VARCHAR" property="attribute7" />
+    <result column="ATTRIBUTE8" jdbcType="VARCHAR" property="attribute8" />
+    <result column="ATTRIBUTE9" jdbcType="VARCHAR" property="attribute9" />
+    <result column="ATTRIBUTE10" jdbcType="VARCHAR" property="attribute10" />
+    <result column="ATTRIBUTE11" jdbcType="VARCHAR" property="attribute11" />
+    <result column="ATTRIBUTE12" jdbcType="VARCHAR" property="attribute12" />
+    <result column="ATTRIBUTE13" jdbcType="VARCHAR" property="attribute13" />
+    <result column="ATTRIBUTE14" jdbcType="VARCHAR" property="attribute14" />
+    <result column="ATTRIBUTE15" jdbcType="VARCHAR" property="attribute15" />
+  </resultMap>
+    
+  <select id="selectByOrderLines" parameterType="hap.sell.dto.OrderLines" resultMap="BaseResultMap">
+		SELECT orl.LINE_ID,
+		       orl.HEADER_ID,
+		       orl.LINE_NUMBER,
+		       orl.INVENTORY_ITEM_ID,
+		       orl.ORDERD_QUANTITY,
+		       orl.ORDER_QUANTITY_UOM,
+		       orl.UNIT_SELLING_PRICE,
+		       orl.DESCRIPTION,
+		       orl.COMPANY_ID
+		  FROM hap_om_order_lines orl
+		<where>
+        	<if test="lineId != null">
+                and orl.LINE_ID = #{lineId,jdbcType=DECIMAL}
+            </if>
+            <if test="headerId != null">
+                and orl.HEADER_ID = #{headerId,jdbcType=DECIMAL}
+            </if>
+            <if test="lineNumber != null">
+                and orl.LINE_NUMBER = #{lineNumber,jdbcType=DECIMAL}
+            </if>
+            <if test="inventoryItemId != null">
+                and orl.INVENTORY_ITEM_ID = #{inventoryItemId,jdbcType=DECIMAL}
+            </if>
+            <if test="orderdQuantity != null">
+                and orl.ORDERD_QUANTITY = #{orderdQuantity,jdbcType=DECIMAL}
+            </if>
+            <if test="orderQuantityUom != null">
+                AND orl.ORDER_QUANTITY_UOM like #{orderQuantityUom,jdbcType=VARCHAR}
+            </if>
+            <if test="unitSellingPrice != null">
+                AND orl.UNIT_SELLING_PRICE = #{unitSellingPrice,jdbcType=DECIMAL}
+            </if>
+            <if test="description != null">
+                AND orl.DESCRIPTION like #{description,jdbcType=VARCHAR}
+            </if>
+            <if test="companyId != null">
+                AND orl.COMPANY_ID = #{companyId,jdbcType=DECIMAL}
+            </if>
+        </where>
+    </select>
+
+ <insert id="insertOrderLines" parameterType="hap.sell.dto.OrderLines" >
+    INSERT INTO hap_om_order_lines
+	    <trim prefix="(" suffix=")" suffixOverrides="," >
+	    
+	    	<if test="lineId != null">
+                LINE_ID,
+            </if>
+            <if test="headerId != null">
+                HEADER_ID,
+            </if>
+            <if test="lineNumber != null">
+               LINE_NUMBER,
+            </if>
+            <if test="inventoryItemId != null">
+               INVENTORY_ITEM_ID,
+            </if>
+            <if test="orderQuantity != null">
+                ORDERD_QUANTITY,
+            </if>
+            <if test="orderQuantityUom != null">
+                ORDER_QUANTITY_UOM,
+            </if>
+            <if test="unitSellingPrice != null">
+                UNIT_SELLING_PRICE,
+            </if>
+            <if test="description != null">
+                DESCRIPTION,
+            </if>
+            <if test="companyId != null">
+                COMPANY_ID,
+            </if>
+	    </trim>
+	    
+	    <trim prefix="values (" suffix=")" suffixOverrides="," >
+	      <if test="lineId != null">
+                 #{lineId,jdbcType=DECIMAL},
+            </if>
+            <if test="headerId != null">
+                #{headerId,jdbcType=DECIMAL},
+            </if>
+            <if test="lineNumber != null">
+                #{lineNumber,jdbcType=DECIMAL},
+            </if>
+            <if test="inventoryItemId != null">
+                #{inventoryItemId,jdbcType=DECIMAL},
+            </if>
+            <if test="orderQuantity != null">
+                #{orderQuantity,jdbcType=DECIMAL},
+            </if>
+            <if test="orderQuantityUom != null">
+                #{orderQuantityUom,jdbcType=VARCHAR},
+            </if>
+            <if test="unitSellingPrice != null">
+                #{unitSellingPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="description != null">
+                #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="companyId != null">
+                #{companyId,jdbcType=DECIMAL},
+            </if>
+	    </trim>
+  </insert>
+ </mapper>

@@ -1,0 +1,277 @@
+<#--
+ * description: Fruit.html
+ * version: 1.0 
+ * author:taotao.xu@hand-china.com
+ * #{copyright}#
+ * 
+-->
+<#include "../include/head.html">
+<body style="padding: 10px;">
+	<form id="fruitForm"></form>
+    <div id="fruitGrid" style="margin: 0; padding: 0"></div>
+    <script type="text/javascript">
+    $(function() {
+    	debugger;
+        window['fruitForm'] = $("#fruitForm").ligerForm({
+            fields : [{
+            	//手打水果描述
+                type : 'text',
+                label : '<@spring.message "hfs.ass.fruit.fruitdescription"/>',
+                name : 'fruitDescription',
+                width: 180
+            },{
+            	//lov水果名称
+            	display : "<@spring.message "hfs.ass.fruit.fruitname"/>",
+                name : "fruitName",//最终选中的值字段名
+                type : "popup",
+                newline : false,
+                //如果不需要把lov选中的textField值放进data中那么这个属性可以不设置，如果需要放在data中就需要设置
+                textField:'fruitName',
+                options:{
+                    readonly:false,//是否可编辑
+                    valueField : 'fruitName',//选中的valueField
+                    textField : 'fruitName',//选中的textField
+                    grid : {
+                        columns : [{
+                            display : "<@spring.message "hfs.ass.fruit.fruitname"/>",
+                            name : "fruitName",
+                            width : 150,
+                            type : "text",
+                            align : "left"
+                        },
+                        {
+                            display : "<@spring.message "hfs.ass.fruit.fruitid"/>",
+                            name : "fruitId",
+                            width : 150,
+                            type : "text",
+                            align : "left"
+                        }],
+                        //数据查询的url
+                        url : '${base.contextPath}/ass/fruit/query'
+                    }
+                   
+                }
+            },{
+            	//下拉水果号码
+                display: "<@spring.message "hfs.ass.fruit.fruitCode"/>",
+                name: "fruitId",
+                type: "select",
+                textField:"fruitCode",
+                options: {
+                    readonly: false,
+                    valueField: 'fruitId',
+                    textField: 'fruitCode',
+                    url: '${base.contextPath}/ass/fruit/query',
+                    triggerToLoad: true,//注意
+                     onBeforeOpen: function() {
+                        //这里设置查询参数
+                        this.setParm('fruitName', liger.get('fruitName').getValue());
+                        this.triggerLoaded = false;//注意
+                    }
+                }
+            }],
+            buttons : [ {
+            	//查询按钮
+                text : '<@spring.message "hap.query"/>',
+                disabled : false,
+                width : 60,
+                click : function() {
+                    Hap.gridQuery({
+                        form : fruitForm,
+                        grid : fruitGrid
+                    })
+                }
+                },{
+                	//上传文件按钮
+                	text : '<@spring.message "hap.upload"/>',
+                    disabled : false,
+                    width : 60,
+                    click : function() {
+                    	window.popWin=$.ligerDialog.open({
+                    		load :false,
+                    		width : 800,
+                    		height : 500,
+                    		title :'<@spring.message "sysfile.upload"/>',
+                    		url:'UpLoadFile.html'
+              
+                    	})
+
+                    }
+                },{
+                	//查看文件按钮
+                	text : '<@spring.message "hap.download"/>',
+                    disabled : false,
+                    width : 60,
+                    click : function() {
+                    	window.popWin=$.ligerDialog.open({
+                    		load :false,
+                    		width : 800,
+                    		height : 500,
+                    		title :'<@spring.message "hap.download"/>',
+                    		url:'DownLoadFile.html'
+              
+                    	})
+
+                    }
+                }]
+        });
+
+        window['fruitGrid'] = $("#fruitGrid").ligerGrid({
+            unSetValidateAttr : false,
+            //水果显示
+            columns : [ {
+                display : '<@spring.message "hfs.ass.fruit.fruitid"/>',
+                name : 'fruitId',
+                align : 'left',
+                width : 120
+            },{
+                display : '<@spring.message "hfs.ass.fruit.fruitCode"/>',
+                name : 'fruitCode',
+                align : 'left',
+                width : 120,
+                editor : {
+                    type : 'text'
+                }, 
+                validate: {
+                    required: true
+                }
+            },{
+                display : '<@spring.message "hfs.ass.fruit.fruitname"/>',
+                name : 'fruitName',
+                align : 'left',
+                width : 120,
+                editor : {
+                    type : 'text'
+                },
+                validate: {
+                    required: true
+                }
+            }, {
+                display : '<@spring.message "hfs.ass.fruit.fruitdescription"/>',
+                name : 'fruitDescription',
+                align : 'left',
+                width : 150,
+                editor : {
+                	  type : 'tl',
+                      idField:'fruitId',
+                      dto:'hfs.ass.dto.Fruit'
+                }
+            },{
+            	//lov显示
+                display : 'lov',
+                name : 'fruitId',
+                width : 150,
+                //很重要，否则无法显示选中的描述
+                textField:'fruitDescription',
+                editor : {
+                    type : 'popup',
+                    valueField : 'fruitId',//lov的valueField
+                    textField : 'fruitDescription',//lov的textField
+                    grid : {
+                        columns : [ {
+                            display : '<@spring.message "hfs.ass.fruit.fruitid"/>',
+                            name : "fruitId",
+                            width : 120,
+                            type : "int"
+                        }, {
+                            display : '<@spring.message "hfs.ass.fruit.fruitCode"/>',
+                            name : "fruitCode",
+                            width : 120,
+                            type : "text"
+                        }, {
+                            display : "<@spring.message "hfs.ass.fruit.fruitname"/>",
+                            name : "fruitName",
+                            width : 120,
+                            type : "text"
+                        }, {
+                            display : "<@spring.message "hfs.ass.fruit.fruitdescription"/>",
+                            name : "fruitDescription",
+                            width : 120,
+                            type : "text"
+                        } ],
+                        url : '${base.contextPath}/ass/fruit/query'
+                    },
+                    //lov上的查询条件
+                    condition : {
+                        inputWidth : 150,
+                        labelWidth : 70,
+                        fields : [ {
+                            display : '<@spring.message "hfs.ass.fruit.fruitname"/>',
+                            name : "fruitName",
+                            newline : false,
+                            type : "text"
+                        }, {
+                            display : '<@spring.message "hfs.ass.fruit.fruitdescription"/>',
+                            name : "fruitDescription",
+                            newline : false,
+                            type : "text"
+                        } ]
+                    }
+                }
+            },{
+            	//开始日历
+            	display: '<@spring.message "user.startActiveDate"/>',
+                name   : 'startActiveDate',
+                align  : 'center',
+                width  : 120,
+                type:'date',
+                format : "yyyy-MM-dd",
+                editor : {
+                    type: 'date'
+            }
+            },{
+            	//结束日历
+            	display: '<@spring.message "user.endActiveDate"/>',
+                name   : 'endActiveDate',
+                align  : 'center',
+                width  : 120,
+                type:'date',
+                format : "yyyy-MM-dd",
+                editor : {
+                    type: 'date'
+            }
+            }],
+            url : '${base.contextPath}/ass/fruit/query',
+             toolbar : {
+                items : [ {
+                    text : '<@spring.message "hap.new"/>',
+                    disable : false,
+                    click : function() {
+                        fruitGrid.addRow({})
+                    },
+                    icon : 'add'
+                }, {
+                    line : true
+                },{
+                    text : '<@spring.message "hap.delete"/>',
+                    click : function() {
+                	    Hap.gridDelete({
+                            grid : fruitGrid,
+                            url : '${base.contextPath}/ass/fruit/submit'
+                        }) 
+                    	fruitGrid.deleteSelectedRow();
+                    },
+                    icon : 'delete'
+                }, {
+                    line : true
+                }, {
+                    text : '<@spring.message "hap.save"/>',
+                    click : function() {
+                        Hap.gridSave({
+                            grid : fruitGrid,
+                            url : '${base.contextPath}/ass/fruit/submit'
+                        })
+                    },
+                    icon : 'save'
+                }]
+            },
+            enabledEdit : true,
+            width : '99%',
+            height : '98%',
+            checkbox : true
+        });
+    });
+    
+    </script>
+</body>
+</html>
